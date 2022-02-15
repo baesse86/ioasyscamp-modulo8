@@ -1,3 +1,5 @@
+import {useSelector} from 'react-redux';
+
 import background from '../../assets/backgrounds/book.jpg'
 import {
   Container,
@@ -12,8 +14,10 @@ const Card = ({
   book: { authors, published, title, pageCount, imageUrl, publisher },
   ...rest
 }) => {
+  const {theme} = useSelector(({theme}) => theme);
+
   return (
-    <Container {...rest}>
+    <Container isDarkMode={theme === 'dark'} {...rest}>
       <ImageContainer>
         {imageUrl ? (
           <Image src={imageUrl} width={82} height={122} alt={title} />
@@ -23,7 +27,7 @@ const Card = ({
       </ImageContainer>
 
       <div className="content">
-        <Title>{title ?? 'Livro desconhecido'}</Title>
+        <Title isDarkMode={theme === 'dark'}>{title ?? 'Livro desconhecido'}</Title>
         <Authors>
           {authors.length > 2 ? (
             <>

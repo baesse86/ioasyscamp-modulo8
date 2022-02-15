@@ -11,7 +11,8 @@ export const Container = styled.button`
   outline: none;
   border: none;
   box-shadow: 0px 6px 24px rgba(84, 16, 95, 0.13);
-  background-color: ${({ theme }) => theme.colors.white};
+  background-color: ${({ theme, isDarkMode }) =>
+    isDarkMode ? theme.colors.dark : theme.colors.white};
 
   > .content {
     margin-left: 20px;
@@ -37,7 +38,8 @@ export const Title = styled.h2`
   font-size: 14px;
   font-weight: 500;
   line-height: 20px;
-  color: ${({ theme }) => theme.colors.dark};
+  color: ${({ theme, isDarkMode }) =>
+    isDarkMode ? theme.colors.white : theme.colors.dark};
 `;
 
 export const Authors = styled.div`
