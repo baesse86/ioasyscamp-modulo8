@@ -1,24 +1,21 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux';
 
-import axios from 'axios'
 import Header from '../../components/Header/Header'
 import Input from '../../components/Input/Input'
 import Button from '../../components/Button/Button'
 import * as S from './Login.styles'
 
+import { LOGIN } from '../../store/slices/authSlice';
+
 const Login = () => {
+  const dispatch = useDispatch();
+
   const [formDados, setFormDados] = useState({ email: '', password: '' })
   let navigate = useNavigate()
   const requestLogin = () => {
-    axios
-      .post('https://books.ioasys.com.br/api/v1/auth/sign-in', { ...formDados })
-      .then(({ data, headers }) => {
-        localStorage.setItem('authorization', headers.authorization)
-        localStorage.setItem('name', data.name)
-        localStorage.setItem('birthdate', data.birthdate)
-        navigate('/home')
-      })
+    dispatch(LOGIN({formDados, callbackSuccess: () => navigate('/home')}))
   }
   return (
     <S.Container>

@@ -1,21 +1,26 @@
 import { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux';
 import Card from '../../components/Card'
 import Header from '../../components/Header'
 import Pagination from '../../components/Pagination'
 import Modal from '../../components/Modal'
 import * as S from './Home.styles'
-import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
-import user from '../../mocks/user.json'
+import { GET_BOOKS } from '../../store/slices/booksSlices';
+
 
 const Home = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { user } = useSelector(({auth}) => auth);
+  const { books, totalPages } = useSelector(({books}) => books);
+
   const [openModal, setOpenModal] = useState({ visible: false, book: null })
   const [page, setPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(0)
 
-  const [books, setBooks] = useState([])
-  let navigate = useNavigate()
+
 
   const handleOpenModal = book => {
     setOpenModal({ visible: true, book })
@@ -30,28 +35,12 @@ const Home = () => {
   }
 
   useEffect(() => {
-    const meuToken = localStorage.getItem('authorization')
-    if (meuToken) {
-      axios
-        .get(`https://books.ioasys.com.br/api/v1/books?page=${page}&amount=2`, {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem('authorization')}`
-          }
-        })
-        .then(({ data }) => {
-          setBooks(data.data)
-          setTotalPages(data.totalPages)
-          setPage(data.page)
-        })
-        .catch(e => {
-          if (e.response.status === 401) {
-            navigate('/')
-          }
-        })
+    if(user){
+      dispatch(GET_BOOKS({page}))
     } else {
       navigate('/')
     }
-  }, [page])
+  }, [dispatch, page, user, navigate])
 
   return (
     <>
@@ -60,11 +49,11 @@ const Home = () => {
           <Header
             mode="dark"
             user={{
-              name: localStorage.getItem('name'),
-              email: localStorage.getItem('email'),
-              birthdate: localStorage.getItem('birthdate'),
-              gender: localStorage.getItem('gender'),
-              id: localStorage.getItem('id')
+              name: user.name,
+              email: user.email,
+              birthdate: user.birthdate,
+              gender: user.gender,
+              id: user.id
             }}
           />
           <S.CardsContainer>
